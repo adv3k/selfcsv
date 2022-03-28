@@ -16,18 +16,18 @@ fn main() -> Result<(), std::io::Error> {
 
     let header: Vec<String> = line_vec[0].clone();
 
-    let cells: Vec<CellData> = make_vec_cells(header, line_vec);
+    let (cells, header_for_cells) = make_vec_cells(header, line_vec);
 
+    displayData(cells, header_for_cells);
 
     Ok(())
 }
 
-fn make_vec_cells(head_vec: Vec<String>, vect: Vec<Vec<String>>) -> Vec<CellData> {
+fn make_vec_cells(head_vec: Vec<String>, vect: Vec<Vec<String>>) -> (Vec<CellData>, Vec<String>) {
     let mut cell_vec: Vec<CellData> = Vec::new();
 
     for vector in &vect[1..] {
         let mut ind = 0;
-        let mut row_vec: Vec<CellData> = Vec::new();
 
         for item in vector {
             let id = &head_vec[ind];
@@ -38,7 +38,7 @@ fn make_vec_cells(head_vec: Vec<String>, vect: Vec<Vec<String>>) -> Vec<CellData
         }
     }
 
-    cell_vec
+    (cell_vec, head_vec)
 }
 
 
@@ -67,6 +67,21 @@ fn make_line_vec(file: &str, mut vect: Vec<Vec<String>>) -> Result<Vec<Vec<Strin
 }
 
 
-//fn displayData(cell_vector: Vec<Vec>) -> Result<(), std::io::Error> {
+fn displayData(cell_vector: Vec<CellData>, head_labels: Vec<String>) -> Result<(), std::io::Error> {
+    let row_size = head_labels.len();
+    let mut row_count = 1;
 
-//}
+    for label in head_labels {
+        print!("{:#}\t", label);
+    }
+    println!();
+    for cell in cell_vector {
+        print!("{:#}\t", cell.data);
+        row_count += 1;
+        if row_count > row_size {
+            row_count = 1;
+            print!("\n");
+        }
+    }
+    Ok(())
+}
